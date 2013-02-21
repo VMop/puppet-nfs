@@ -1,0 +1,12 @@
+name    'nanliu-nfs'
+version '0.0.1'
+source ''
+author ''
+license 'Apache 2.0'
+summary 'NFS module'
+description 'NFS client and server.'
+project_page ''
+
+dependency 'ripienaar-concat', '>= 0.2.0'
+dependency 'puppetlabs-stdlib', '>= 3.0.0'
+dependency 'puppetlabs-mount_providers', '>= 0.0.2'

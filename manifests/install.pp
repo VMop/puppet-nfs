@@ -1,18 +1,14 @@
-# = Class nfs::install
+# class nfs::install
 #
 class nfs::install {
 
-  if $::nfs::client {
-    package { $::nfs::pkg_list_client:
-      ensure => $::nfs::pkg_ensure;
-    }
+  package { $::nfs::pkg['client']:
+    ensure => $::nfs::pkg['ensure'],
   }
 
   if $::nfs::server {
-    package { $::nfs::pkg_list_server:
-      ensure => $::nfs::pkg_ensure;
+    package { $::nfs::pkg['server']:
+      ensure => $::nfs::pkg['ensure'],
     }
   }
-
 }
-

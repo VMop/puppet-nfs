@@ -1,23 +1,27 @@
-# = Class nfs
+# class nfs::service
 #
 class nfs::service {
   if $::nfs::server {
-    Service {
-      require => Class['::nfs::config'],
+    service { $::nfs::svc['rpc']:
+      ensure => $::nfs::svc['ensure'],
+      enable => $::nfs::svc['enable'],
     }
 
-    service { $::nfs::service_rpc:
-      ensure    => $::nfs::service_ensure,
-      enable    => $::nfs::service_enable,
-      hasstatus => $::nfs::service_hasstatus;
+    service { $::nfs::svc['name']:
+      ensure  => $::nfs::svc['ensure'],
+      enable  => $::nfs::svc['enable'],
+      require => Service[$::nfs::svc['rpc']],
+    }
+  } elsif $::nfs::svc['client'] {
+    service { $::nfs::svc['rpc']:
+      ensure => $::nfs::svc['ensure'],
+      enable => $::nfs::svc['enable'],
     }
 
-    service { $::nfs::service_name:
-      ensure    => $::nfs::service_ensure,
-      enable    => $::nfs::service_enable,
-      hasstatus => $::nfs::service_hasstatus,
-      require   => Service[$::nfs::service_rpc];
+    service { $::nfs::svc['client']:
+      ensure  => $::nfs::svc['ensure'],
+      enable  => $::nfs::svc['enable'],
+      require => Service[$::nfs::svc['rpc']],
     }
   }
 }
-

@@ -3,14 +3,9 @@
 ## Requirements
 
 * [concat module](https://github.com/ripienaar/puppet-concat)
+* stdlib
 
-## Tested on...
-
-* Debian 5 (Lenny)
-* Debian 6 (Squeeze)
-* CentOS 6
-
-## Example usage
+## Usage
 
 ### Install NFS client tools
 
@@ -34,15 +29,23 @@
       }
 
       nfs::export { '/srv/nfs01 10.0.1.1/24':
-        export_directory => '/srv/nfs01',
-        export_target    => '10.0.1.1/24',
-        export_options   => 'rw,sync,no_root_squash',
+        export  => '/srv/nfs01',
+        host    => '10.0.1.1/24',
+        options => 'rw,sync,no_root_squash',
       }
 
       nfs::export { '/srv/nfs01 10.0.2.1/24':
-        export_directory => '/srv/nfs01',
-        export_target    => '10.0.2.1/24',
-        export_options   => 'rw,sync,no_root_squash',
+        export  => '/srv/nfs01',
+        host    => '10.0.2.1/24',
+        options => 'rw,sync,no_root_squash',
       }
     }
 
+## Platform
+
+* CentOS 6
+* Debian (untested)
+
+## Credit
+
+Based on [Tom De Vylder puppet-nfs module] (https://github.com/arioch/puppet-nfs) with significant incompatible changes.

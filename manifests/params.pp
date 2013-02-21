@@ -1,43 +1,39 @@
-# = Class nfs::params
+# class nfs::params
 #
 class nfs::params {
 
-  $client = true
-  $server = false
+  $config = {
+    'path'  => '/etc/exports',
+    'owner' => 'root',
+    'group' => 'root',
+    'mode'  => '0644',
+  }
 
-  case $::operatingsystem {
-    'RedHat', 'CentOS': {
-      $config_dir_mode    = '0755'
-      $config_file        = '/etc/exports'
-      $config_file_mode   = '0644'
-      $config_group       = 'root'
-      $config_user        = 'root'
-      $pkg_ensure         = present
-      $pkg_list_client    = 'nfs-utils'
-      $pkg_list_server    = 'rpcbind'
-      $service_enable     = true
-      $service_ensure     = running
-      $service_hasrestart = true
-      $service_hasstatus  = true
-      $service_name       = 'nfs'
-      $service_rpc        = 'rpcbind'
+  $package = {
+    'ensure' => 'present',
+  }
+
+  $service = {
+    'enable' => true,
+    'ensure' => running,
+  }
+
+  case $::osfamily {
+    'RedHat': {
+      $package['client'] = 'nfs-utils'
+      $package['server'] = 'rpcbind'
+      $service['name']   = ['nfs', 'nfslock']
+      $service['rpc']    = 'rpcbind'
+      # client should also run nfslock service:
+      # https://access.redhat.com/knowledge/docs/en-US/Red_Hat_Enterprise_Linux/6/html/Storage_Administration_Guide/s1-nfs-start.html
+      $service['client'] = 'nfslock'
     }
 
-    'Debian', 'Ubuntu': {
-      $config_dir_mode    = '0755'
-      $config_file        = '/etc/exports'
-      $config_file_mode   = '0644'
-      $config_group       = 'root'
-      $config_user        = 'root'
-      $pkg_ensure         = present
-      $pkg_list_client    = 'nfs-common'
-      $pkg_list_server    = 'nfs-kernel-server'
-      $service_enable     = true
-      $service_ensure     = running
-      $service_hasrestart = true
-      $service_hasstatus  = true
-      $service_name       = 'nfs-kernel-server'
-      $service_rpc        = 'portmap'
+    'Debian': {
+      $package['client'] = 'nfs-common'
+      $package['server'] = 'nfs-kernel-server'
+      $service['name']   = 'nfs-kernel-server'
+      $service['rpc']    = 'portmap'
     }
 
     default: {
@@ -45,4 +41,3 @@ class nfs::params {
     }
   }
 }
-
